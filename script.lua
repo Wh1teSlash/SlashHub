@@ -19,13 +19,15 @@ local function teleportToPlace(placeId)
 	game:GetService("TeleportService"):Teleport(placeId, humanoidRootPart)
 end
 
-local function onInputBegan(input, gameProcessedEvent)
+local userInputService = game:GetService("UserInputService")
+
+local function onControlPressed(input, gameProcessedEvent)
     if input.KeyCode == Enum.KeyCode.RightControl then
         venyx:toggle()
     end
 end
 
-game:GetService("UserInputService").InputBegan:Connect(onInputBegan)
+userInputService.InputBegan:Connect(onControlPressed)
 
 
 section1:addButton("Main Game", function()
