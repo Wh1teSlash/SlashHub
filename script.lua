@@ -19,6 +19,15 @@ local function teleportToPlace(placeId)
 	game:GetService("TeleportService"):Teleport(placeId, humanoidRootPart)
 end
 
+local function onInputBegan(input, gameProcessedEvent)
+    if input.KeyCode == Enum.KeyCode.RightControl then
+        library:toggle()
+    end
+end
+
+game:GetService("UserInputService").InputBegan:Connect(onInputBegan)
+
+
 section1:addButton("Main Game", function()
 teleportToPlace(maingame)
 end)
