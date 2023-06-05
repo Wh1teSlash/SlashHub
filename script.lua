@@ -159,5 +159,50 @@ until Server
 
 TPS:TeleportToPlaceInstance(_place,Server.id,game.Players.LocalPlayer)
 end)
+section3:addButton("Teleport to lowest server", function()
+local TeleportService = game:GetService("TeleportService")
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+
+local PLACE_ID = game.PlaceId -- Replace with your game's place ID
+local YOUR_USER_ID = game.Players.LocalPlayer.id -- Replace with your Roblox UserId
+local MAX_SERVERS = 100
+
+function getServerWithMaxPlayers()
+    local serverWithMaxPlayers = nil
+    local maxPlayers = -1
+
+    local cursor = ""
+    repeat
+        local url = "https://games.roblox.com/v1/games/" .. PLACE_ID .. "/servers/Public?limit=100&cursor=" .. cursor
+        local response = HttpService:GetAsync(url)
+        local data = HttpService:JSONDecode(response)
+
+        for _, server in ipairs(data.data) do
+            if server.playing and server.playing > maxPlayers then
+                maxPlayers = server.playing
+                serverWithMaxPlayers = server
+            end
+        end
+        cursor = data.nextPageCursor
+    until cursor == nil or cursor == "" or maxPlayers >= MAX_SERVERS
+
+    return serverWithMaxPlayers
+end
+
+function teleportToMaxServer(player)
+    if player.UserId == game.Players.LocalPlayer.id then
+        local server = getServerWithMaxPlayers()
+        if server then
+            TeleportService:TeleportToPlaceInstance(PLACE_ID, server.id, player)
+        else
+            print("Could not find a server with max players.")
+        end
+    end
+end
+
+local player = Players.LocalPlayer
+teleportToMaxServer(player)
+end)
 
 venyx:SelectPage(venyx.pages[1], true)
