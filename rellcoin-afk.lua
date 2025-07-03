@@ -5,7 +5,7 @@ if not game:IsLoaded() then
     until game:IsLoaded()
 end
 
-local module = loadstring(game:HttpGet "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/serverhop.lua")()
+wait(10)
 
 function selectVillage(village)
     local Players = game:GetService("Players")
@@ -37,13 +37,13 @@ end
 
 if smallestTeam then
     if smallestCount >= 1 then
-        module:Teleport(game.PlaceId)
+        game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId,game.JobId) 
     else
         selectVillage(smallestTeam.Name)
         wait(_G.delayBetweenTeleports)
 
-        module:Teleport(game.PlaceId)
+        game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId,game.JobId) 
     end
 else
-    module:Teleport(game.PlaceId)
+    game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId,game.JobId) 
 end
