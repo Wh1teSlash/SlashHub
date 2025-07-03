@@ -23,6 +23,8 @@ function selectVillage(village)
     )
 end
 
+local module = loadstring(game:HttpGet "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/serverhop.lua")()
+
 local Teams = game:GetService("Teams")
 local smallestTeam = nil
 local smallestCount = math.huge
@@ -37,7 +39,7 @@ end
 
 if smallestTeam then
     if smallestCount >= 1 then
-        game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId,game.JobId) 
+        module:Teleport(game.PlaceId) 
     else
         selectVillage(smallestTeam.Name)
         wait(_G.delayBetweenTeleports)
@@ -45,5 +47,5 @@ if smallestTeam then
         game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId,game.JobId) 
     end
 else
-    game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId,game.JobId) 
+    module:Teleport(game.PlaceId) 
 end
