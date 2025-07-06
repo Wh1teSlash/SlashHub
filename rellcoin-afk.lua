@@ -1,5 +1,6 @@
-local script =
-    'loadstring(game:HttpGet("https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/rellcoin-afk.lua"))()'
+_G.delayBetweenTeleports = 115
+
+local script = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/rellcoin-afk.lua"))()'
 
 if not game:IsLoaded() then
     print("Game is loading waiting...")
@@ -41,8 +42,7 @@ if smallestTeam then
 
         queue_on_teleport(script)
 
-        game:GetService("TeleportService"):Teleport(game.PlaceId,
-                                                    game.Players.LocalPlayer)
+        module:Teleport(game.PlaceId)
     end
 else
     queue_on_teleport(script)
