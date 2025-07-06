@@ -1,4 +1,7 @@
+_G.delayBetweenTeleports = 115
+
 local mainScript = [[
+_G.delayBetweenTeleports = 115
 if not game:IsLoaded() then
     print("Game is loading, waiting...")
     repeat wait() until game:IsLoaded()
