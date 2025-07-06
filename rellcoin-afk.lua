@@ -1,22 +1,31 @@
 if not game:IsLoaded() then
     print("Game is loading waiting...")
-    repeat wait() until game:IsLoaded()
+    repeat
+        wait()
+    until game:IsLoaded()
 end
 
-local module = loadstring(
-                   game:HttpGet "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/serverhop.lua")()
+wait(10)
 
 function selectVillage(village)
-    local Players = game:GetService('Players');
-    local Teams = game:GetService('Teams');
+    local Players = game:GetService("Players")
 
     local choosevill = Players.LocalPlayer.choosevill
 
-    choosevill:FireServer("vill", village)
+    choosevill:FireServer(
+        "vill",
+        village
+    )
 
-    choosevill:FireServer("occ", "kage")
+    choosevill:FireServer(
+        "occ",
+        "kage"
+    )
 end
 
+local module = loadstring(game:HttpGet "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/serverhop.lua")()
+
+local Teams = game:GetService("Teams")
 local smallestTeam = nil
 local smallestCount = math.huge
 
@@ -30,20 +39,13 @@ end
 
 if smallestTeam then
     if smallestCount >= 1 then
-        queue_on_teleport(loadstring(game:HttpGet(
-                                         "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/rellcoin-afk.lua"))())
-        module:Teleport(game.PlaceId)
+        module:Teleport(game.PlaceId) 
     else
         selectVillage(smallestTeam.Name)
         wait(_G.delayBetweenTeleports)
 
-        queue_on_teleport(loadstring(game:HttpGet(
-                                         "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/rellcoin-afk.lua"))())
-
-        module:Teleport(game.PlaceId)
+        game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId,game.JobId) 
     end
 else
-    queue_on_teleport(loadstring(game:HttpGet(
-                                     "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/rellcoin-afk.lua"))())
-    module:Teleport(game.PlaceId)
+    module:Teleport(game.PlaceId) 
 end
