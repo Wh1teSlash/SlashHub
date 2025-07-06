@@ -1,31 +1,31 @@
+_G.delayBetweenTeleports = 115
+
 if not game:IsLoaded() then
     print("Game is loading waiting...")
-    repeat
-        wait()
-    until game:IsLoaded()
+    repeat wait() until game:IsLoaded()
 end
 
 wait(10)
 
+function reexecuteScript()
+    queue_on_load(
+        '_G.delayBetweenTeleports = 115 loadstring(game:HttpGet "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/rellcoin-afk.lua")()')
+end
+
 function selectVillage(village)
-    local Players = game:GetService("Players")
+    local Players = game:GetService('Players');
+    local Teams = game:GetService('Teams');
 
     local choosevill = Players.LocalPlayer.choosevill
 
-    choosevill:FireServer(
-        "vill",
-        village
-    )
+    choosevill:FireServer("vill", village)
 
-    choosevill:FireServer(
-        "occ",
-        "kage"
-    )
+    choosevill:FireServer("occ", "kage")
 end
 
-local module = loadstring(game:HttpGet "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/serverhop.lua")()
+local module = loadstring(
+                   game:HttpGet "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/serverhop.lua")()
 
-local Teams = game:GetService("Teams")
 local smallestTeam = nil
 local smallestCount = math.huge
 
@@ -39,13 +39,17 @@ end
 
 if smallestTeam then
     if smallestCount >= 1 then
-        module:Teleport(game.PlaceId) 
+        reexecuteScript()
+        module:Teleport(game.PlaceId)
     else
         selectVillage(smallestTeam.Name)
         wait(_G.delayBetweenTeleports)
 
-        game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId,game.JobId) 
+        reexecuteScript()
+        game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId,
+                                                                   game.JobId)
     end
 else
-    module:Teleport(game.PlaceId) 
+    reexecuteScript()
+    module:Teleport(game.PlaceId)
 end
