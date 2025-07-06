@@ -9,7 +9,7 @@ wait(10)
 
 function reexecuteScript()
     queue_on_load(
-        '_G.delayBetweenTeleports = 115 loadstring(game:HttpGet "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/rellcoin-afk.lua")()')
+        'loadstring(game:HttpGet "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/rellcoin-afk.lua")()')
 end
 
 function selectVillage(village)
