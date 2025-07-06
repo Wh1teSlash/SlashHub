@@ -1,3 +1,6 @@
+local script =
+    'loadstring(game:HttpGet("https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/rellcoin-afk.lua"))()'
+
 if not game:IsLoaded() then
     print("Game is loading waiting...")
     repeat wait() until game:IsLoaded()
@@ -30,27 +33,18 @@ end
 
 if smallestTeam then
     if smallestCount >= 1 then
-        queue_on_teleport(
-            'loadstring(game:HttpGet("https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/rellcoin-afk.lua"))()')
+        queue_on_teleport(script)
         module:Teleport(game.PlaceId)
     else
         selectVillage(smallestTeam.Name)
         wait(_G.delayBetweenTeleports)
 
-        queue_on_teleport(
-            'loadstring(game:HttpGet("https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/rellcoin-afk.lua"))()')
+        queue_on_teleport(script)
 
         game:GetService("TeleportService"):Teleport(game.PlaceId,
                                                     game.Players.LocalPlayer)
     end
 else
-    queue_on_teleport(
-        'loadstring(game:HttpGet("https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/rellcoin-afk.lua"))()')
-    module:Teleport(game.PlaceId)
-end
-
-if not smallestTeam then
-    queue_on_teleport(
-        'loadstring(game:HttpGet("https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/rellcoin-afk.lua"))()')
+    queue_on_teleport(script)
     module:Teleport(game.PlaceId)
 end
