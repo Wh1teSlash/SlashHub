@@ -2,7 +2,7 @@ _G.delayBetweenTeleports = 115
 
 if queue_on_teleport then
     local scriptUrl =
-        "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/village-script.lua"
+        "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/rellcoin-afk.lua"
     queue_on_teleport('loadstring(game:HttpGet("' .. scriptUrl .. '"))()')
 end
 
