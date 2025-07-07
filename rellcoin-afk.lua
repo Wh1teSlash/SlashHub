@@ -10,6 +10,15 @@ if not game:IsLoaded() then
     print("Game is loading, waiting...")
     repeat wait() until game:IsLoaded()
 end
+
+-- anti-afk
+local VirtualUser = game:service 'VirtualUser'
+game:service 'Players'.LocalPlayer.Idled:connect(function()
+    warn("anti-afk")
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
+
 wait(10)
 
 local Players = game:GetService('Players');
