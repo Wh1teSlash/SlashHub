@@ -21,8 +21,7 @@ if not game:IsLoaded() then
 end
 
 if not workspace:FindFirstChild("RPGpvp") then
-    game:GetService("Players").LocalPlayer.startevent:FireServer("shindoworld",
-                                                                 5943872934)
+    game:GetService("Players").LocalPlayer.startevent:FireServer("shindoworld", 5943872934)
     return
 end
 
