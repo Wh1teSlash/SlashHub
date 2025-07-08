@@ -20,7 +20,7 @@ if not game:IsLoaded() then
     repeat wait() until game:IsLoaded()
 end
 
-if not workspace.RPGpvp then
+if not workspace:FindFirstChild("RPGpvp") then
     game:GetService("Players").LocalPlayer.startevent:FireServer("shindoworld",
                                                                  5943872934)
     return
