@@ -6,6 +6,15 @@ if queue_on_teleport then
     queue_on_teleport('loadstring(game:HttpGet("' .. scriptUrl .. '"))()')
 end
 
+if game.JobId == "4d80e454-a7e1-40b9-9084-d9cf3760a6cc" then
+    local success, module = pcall(function()
+        return loadstring(game:HttpGet(
+                              "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/serverhop.lua"))()
+    end)
+
+    module:Teleport(game.PlaceId)
+end
+
 if not game:IsLoaded() then
     print("Game is loading, waiting...")
     repeat wait() until game:IsLoaded()
