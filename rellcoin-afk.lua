@@ -77,7 +77,7 @@ end
 local smallestTeam, smallestCount = findSmallestTeam()
 
 if smallestTeam then
-    if smallestCount <= 2 then
+    if smallestCount <= 1 then
         module:Teleport(game.PlaceId)
     else
         if selectVillage(smallestTeam.Name) then
