@@ -98,11 +98,13 @@ if game.GameId == 1511883870 then
         Callback = function(state)
             getgenv().bloodlineSpinning = state
 
-            spawn(function()
-                if getgenv().bloodlineSpinning then
-                    player.startevent:FireServer("band", "\128")
-                end
+            if getgenv().bloodlineSpinning then
+                player.startevent:FireServer("band", "\128")
+            else
+                player.startevent:FireServer("band", "Eye")
+            end
 
+            spawn(function()
                 while getgenv().bloodlineSpinning do
                     wait(0.1)
 
