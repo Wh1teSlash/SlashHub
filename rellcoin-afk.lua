@@ -66,7 +66,6 @@ if not success then
 end
 
 local smallestTeam, smallestCount = findSmallestTeam()
-local totalPlayers = #Players:GetPlayers()
 
 if smallestTeam then
     if smallestCount >= 1 then
@@ -74,6 +73,8 @@ if smallestTeam then
     else
         if selectVillage(smallestTeam.Name) then
             wait(_G.delayBetweenTeleports)
+
+            local totalPlayers = #Players:GetPlayers()
 
             if (totalPlayers > 1) then
                 module:Teleport(game.PlaceId)
