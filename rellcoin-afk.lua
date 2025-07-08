@@ -3,12 +3,12 @@ _G.delayBetweenTeleports = 115
 if queue_on_teleport then
     local scriptUrl =
         "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/rellcoin-afk.lua"
-    queue_on_teleport('loadstring(game:HttpGet("' .. scriptUrl .. '"))()')
+    queue_on_teleport(game:HttpGetAsync(scriptUrl))
 end
 
 if game.JobId == "4d80e454-a7e1-40b9-9084-d9cf3760a6cc" then
     local success, module = pcall(function()
-        return loadstring(game:HttpGet(
+        return loadstring(game:HttpGetAsync(
                               "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/serverhop.lua"))()
     end)
 
@@ -18,6 +18,12 @@ end
 if not game:IsLoaded() then
     print("Game is loading, waiting...")
     repeat wait() until game:IsLoaded()
+end
+
+if not workspace.RPGpvp then
+    game:GetService("Players").LocalPlayer.startevent:FireServer("shindoworld",
+                                                                 5943872934)
+    return
 end
 
 -- anti-afk
