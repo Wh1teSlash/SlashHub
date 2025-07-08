@@ -102,13 +102,46 @@ if game.GameId == 1511883870 then
                 if getgenv().bloodlineSpinning then
                     player.startevent:FireServer("band", "\128")
                 end
+
                 while getgenv().bloodlineSpinning do
                     wait(0.1)
+
+                    local isFoundBloodline = false
+
                     for _, slot in pairs(getgenv().selectedBloodlineSlots) do
                         for _, bloodline in pairs(
                                                 getgenv().selectedBloodlinesToSpin) do
-                            if game:GetService("Players").LocalPlayer.statz.main[slot]
-                                .Value ~= bloodline then
+                            local currentBloodline =
+                                game:GetService("Players").LocalPlayer.statz
+                                    .main[slot].Value
+
+                            if currentBloodline == bloodline then
+                                isFoundBloodline = true
+                                player.startevent:FireServer("band", "Eye")
+                                player:Kick(
+                                    "Saved data!\n\nBloodline you got: " ..
+                                        bloodline)
+                                return
+                            end
+                        end
+                    end
+
+                    if not isFoundBloodline then
+                        for _, slot in pairs(getgenv().selectedBloodlineSlots) do
+                            local currentBloodline =
+                                game:GetService("Players").LocalPlayer.statz
+                                    .main[slot].Value
+                            local isDesiredBloodline = false
+
+                            for _, bloodline in pairs(
+                                                    getgenv().selectedBloodlinesToSpin) do
+                                if currentBloodline == bloodline then
+                                    isDesiredBloodline = true
+                                    break
+                                end
+                            end
+
+                            if not isDesiredBloodline then
                                 if game:GetService("Players").LocalPlayer.statz
                                     .spins.Value > 0 then
                                     game:GetService("Players").LocalPlayer
@@ -119,17 +152,16 @@ if game.GameId == 1511883870 then
                                                               "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/main/shindo-spins.luau"))
                                     end
 
+                                    getgenv().bloodlineSpinning = false
+                                    if Options.BloodlineSpinToggle then
+                                        Options.BloodlineSpinToggle:SetValue(
+                                            false)
+                                    end
+
                                     game:GetService("TeleportService"):Teleport(
                                         game.PlaceId, player)
-
-                                    Options.BloodlineSpinToggle:SetValue(false)
-                                    getgenv().bloodlineSpinning = false
+                                    return
                                 end
-                            else
-                                player.startevent:FireServer("band", "Eye")
-                                player:Kick(
-                                    "Saved data!\n\nBloodline you got: " ..
-                                        bloodline)
                             end
                         end
                     end
