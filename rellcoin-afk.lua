@@ -77,7 +77,7 @@ end
 local smallestTeam, smallestCount = findSmallestTeam()
 
 if smallestTeam then
-    if smallestCount <= 1 then
+    if smallestCount >= 1 then
         module:Teleport(game.PlaceId)
     else
         if selectVillage(smallestTeam.Name) then
@@ -85,7 +85,7 @@ if smallestTeam then
 
             local totalPlayers = #Players:GetPlayers()
 
-            if (totalPlayers > 1) then
+            if (totalPlayers <= 1) then
                 module:Teleport(game.PlaceId)
                 return
             end
