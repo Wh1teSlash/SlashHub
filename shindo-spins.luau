@@ -68,7 +68,6 @@ do
             return
         end
 
-        local HttpService = game:GetService("HttpService")
         local embed = {
             title = "🎉 Bloodline Obtained!",
             description = "Successfully got a desired bloodline!",
@@ -90,11 +89,15 @@ do
         }
 
         local data = {content = "@everyone", embeds = {embed}}
+        local jsonData = game:GetService("HttpService"):JSONEncode(data)
 
         local success, response = pcall(function()
-            return HttpService:PostAsync(discordWebhookUrl,
-                                         HttpService:JSONEncode(data),
-                                         Enum.HttpContentType.ApplicationJson)
+            return request({
+                Url = discordWebhookUrl,
+                Method = "POST",
+                Headers = {["Content-Type"] = "application/json"},
+                Body = jsonData
+            })
         end)
 
         if not success then
@@ -200,7 +203,7 @@ do
 
         local webhookInput = Tabs.Spins:CreateInput("DiscordWebhookInput", {
             Title = "Discord Webhook URL",
-            Description = "Enter your Discord webhook URL for notifications (optional).",
+            Description = "Enter Discord webhook URL",
             Default = "",
             Placeholder = "https://discord.com/api/webhooks/...",
             Numeric = false,
