@@ -26,6 +26,8 @@ local player = Players.LocalPlayer
 local selectedBloodlineSlots = {}
 local selectedBloodlinesToSpin = {}
 local bloodlineSpinning = false
+local discordWebhookUrl = ""
+local discordNotificationsEnabled = false
 
 do
     local Library = loadstring(game:HttpGetAsync(
@@ -59,6 +61,45 @@ do
             end
         end
         return false, nil
+    end
+
+    local function sendDiscordWebhook(bloodlineName)
+        if not discordNotificationsEnabled or discordWebhookUrl == "" then
+            return
+        end
+
+        local HttpService = game:GetService("HttpService")
+        local embed = {
+            title = "🎉 Bloodline Obtained!",
+            description = "Successfully got a desired bloodline!",
+            color = 65280,
+            fields = {
+                {name = "Player", value = player.Name, inline = true},
+                {name = "Bloodline", value = bloodlineName, inline = true},
+                {
+                    name = "Time",
+                    value = os.date("%Y-%m-%d %H:%M:%S"),
+                    inline = true
+                }
+            },
+            thumbnail = {
+                url = "https://www.roblox.com/headshot-thumbnail/image?userId=" ..
+                    player.UserId .. "&width=420&height=420&format=png"
+            },
+            footer = {text = "SlashHub - Shindo Life Spins"}
+        }
+
+        local data = {content = "@everyone", embeds = {embed}}
+
+        local success, response = pcall(function()
+            return HttpService:PostAsync(discordWebhookUrl,
+                                         HttpService:JSONEncode(data),
+                                         Enum.HttpContentType.ApplicationJson)
+        end)
+
+        if not success then
+            warn("Failed to send Discord webhook: " .. tostring(response))
+        end
     end
 
     local function spinBloodlines()
@@ -157,6 +198,25 @@ do
             selectedBloodlinesToSpin = Values
         end)
 
+        local webhookInput = Tabs.Spins:CreateInput("DiscordWebhookInput", {
+            Title = "Discord Webhook URL",
+            Description = "Enter your Discord webhook URL for notifications (optional).",
+            Default = "",
+            Placeholder = "https://discord.com/api/webhooks/...",
+            Numeric = false,
+            Finished = false,
+            Callback = function(Value) discordWebhookUrl = Value end
+        })
+
+        Tabs.Spins:CreateToggle("DiscordNotificationsToggle", {
+            Title = "Enable Discord Notifications",
+            Description = "Toggle Discord webhook notifications when getting desired bloodlines.",
+            Default = false,
+            Callback = function(state)
+                discordNotificationsEnabled = state
+            end
+        })
+
         Tabs.Spins:CreateToggle("BloodlineSpinToggle", {
             Title = "Start Spin Bloodlines",
             Default = false,
@@ -176,6 +236,7 @@ do
             Description = "Completely resets the data to the moment you joined the game before.",
             Callback = function()
                 player.startevent:FireServer("band", "\128")
+                wait(1)
                 TeleportService:Teleport(game.PlaceId, player)
             end
         }
@@ -185,6 +246,7 @@ do
             Description = "Saves your data.",
             Callback = function()
                 player.startevent:FireServer("band", "Eye")
+                wait(1)
                 player:Kick("Saved data!")
             end
         }
@@ -195,8 +257,9 @@ do
             Title = "Start Rell Coins Auto Farm",
             Description = "Automatically farms Rell Coins.",
             Callback = function()
-                queue_on_teleport(game:HttpGetAsync(
-                                      "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/rellcoin-afk.lua"))
+
+                loadstring(game:HttpGetAsync(
+                               "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/rellcoin-afk.lua"))()
             end
         }
     end
@@ -229,7 +292,11 @@ do
         local foundBloodline, bloodlineName = hasDesiredBloodline()
         if foundBloodline then
             connection:Disconnect()
+
+            sendDiscordWebhook(bloodlineName)
+
             player.startevent:FireServer("band", "Eye")
+            wait(1)
             player:Kick("Saved data!\n\nBloodline you got: " .. bloodlineName)
             return
         end
