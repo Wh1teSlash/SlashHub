@@ -270,13 +270,6 @@ do
         }
     end
 
-    local Players = game:GetService("Players")
-    local player = Players.LocalPlayer
-
-    player.startevent:FireServer("band", "Eye")
-    wait(1)
-    player:Kick("Saved data!")
-
     do
         Tabs.Coins:CreateButton{
             Title = "Start Rell Coins Auto Farm",
