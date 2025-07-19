@@ -123,11 +123,6 @@ do
                 if player.statz.spins.Value > 0 then
                     player.startevent:FireServer("spin", slot)
                 else
-                    if queue_on_teleport then
-                        queue_on_teleport(game:HttpGetAsync(
-                                              "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/main/shindo-spins.luau"))
-                    end
-
                     bloodlineSpinning = false
                     if Library.Options.BloodlineSpinToggle then
                         Library.Options.BloodlineSpinToggle:SetValue(false)
