@@ -133,6 +133,17 @@ do
                         Library.Options.BloodlineSpinToggle:SetValue(false)
                     end
 
+                    local totalPlayers = #Players:GetPlayers()
+                    if (totalPlayers <= 1) then
+                        local success, module = pcall(function()
+                            return loadstring(game:HttpGet(
+                                                  "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/serverhop.lua"))()
+                        end)
+
+                        module:Teleport(game.PlaceId)
+                        return
+                    end
+
                     TeleportService:Teleport(game.PlaceId, player)
                     return
                 end
