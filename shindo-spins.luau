@@ -20,7 +20,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TeleportService = game:GetService("TeleportService")
 local RunService = game:GetService("RunService")
-
+local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
 local selectedBloodlineSlots = {}
@@ -133,6 +133,21 @@ do
                         Library.Options.BloodlineSpinToggle:SetValue(false)
                     end
 
+                    local totalPlayers = #Players:GetPlayers()
+                    if (totalPlayers <= 1) then
+                        local success, module = pcall(function()
+                            return loadstring(game:HttpGet(
+                                                  "https://raw.githubusercontent.com/Wh1teSlash/SlashHub/refs/heads/main/serverhop.lua"))()
+                        end)
+
+                        player.startevent:FireServer("band", "\128")
+                        wait(1)
+                        module:Teleport(game.PlaceId)
+                        return
+                    end
+
+                    player.startevent:FireServer("band", "\128")
+                    wait(1)
                     TeleportService:Teleport(game.PlaceId, player)
                     return
                 end
@@ -254,6 +269,13 @@ do
             end
         }
     end
+
+    local Players = game:GetService("Players")
+    local player = Players.LocalPlayer
+
+    player.startevent:FireServer("band", "Eye")
+    wait(1)
+    player:Kick("Saved data!")
 
     do
         Tabs.Coins:CreateButton{
