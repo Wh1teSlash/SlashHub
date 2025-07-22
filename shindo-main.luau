@@ -5,8 +5,6 @@ local Players = game:GetService("Players")
 local VirtualUser = game:GetService("VirtualUser")
 
 local player = Players.LocalPlayer
-local mission = player.PlayerGui:WaitForChild("Main"):WaitForChild("ingame")
-                    :WaitForChild("Missionstory")
 local green = "http://www.roblox.com/asset/?id=5459241648"
 
 local settings = {
@@ -177,9 +175,9 @@ do
         return false
     end
 
-    _G.attackNPC = attackNPC
-    _G.getAllVillageBosses = getAllVillageBosses
-    _G.isBossQuestAvailable = isBossQuestAvailable
+    getgenv().attackNPC = attackNPC
+    getgenv().getAllVillageBosses = getAllVillageBosses
+    getgenv().isBossQuestAvailable = isBossQuestAvailable
 end
 
 do
@@ -187,161 +185,112 @@ do
     local updateInterval = 0.1
 
     local function processGreenQuests()
-        if not settings.autofarmGreen then return end
-
-        if _G.isBossQuestAvailable() then return end
-        if settings.currentFarmingMode == "bosses" then return end
-        if not player or not player.Character or
+        if not settings.autofarmGreen or settings.currentFarmingMode == "bosses" then
+            return
+        end
+        if getgenv().isBossQuestAvailable() then return end
+        if not player.Character or
             not player.Character:FindFirstChild("HumanoidRootPart") then
             return
         end
 
-        for _, missionGiver in pairs(workspace.missiongivers:GetChildren()) do
-            pcall(function()
-                if player.currentmission and player.currentmission.Value == nil and
-                    missionGiver.Name == "" and
-                    missionGiver:FindFirstChild("Head") and
-                    missionGiver.Head:FindFirstChild("givemission") and
-                    missionGiver.Head.givemission.Enabled and
-                    missionGiver.Head.givemission:FindFirstChild("color") and
-                    missionGiver.Head.givemission.color.Visible and
-                    missionGiver.Head.givemission.color.Image == green then
+        if not player.currentmission or player.currentmission.Value == nil then
+            for _, missionGiver in pairs(workspace.missiongivers:GetChildren()) do
+                local success, result = pcall(function()
+                    if missionGiver.Name == "" and
+                        missionGiver:FindFirstChild("Head") and
+                        missionGiver.Head:FindFirstChild("givemission") and
+                        missionGiver.Head.givemission.Enabled and
+                        missionGiver.Head.givemission:FindFirstChild("color") and
+                        missionGiver.Head.givemission.color.Visible and
+                        missionGiver.Head.givemission.color.Image == green then
 
-                    if _G.isBossQuestAvailable() then return end
-
-                    local clienttalk = missionGiver:FindFirstChild("CLIENTTALK")
-                    if clienttalk then
-                        repeat
-                            wait(.6)
-                            if player.currentmission and
-                                player.currentmission.Value ~= nil then
-                                break
-                            end
-                            if _G.isBossQuestAvailable() then
-                                break
-                            end
-
-                            if player.Character and
-                                player.Character:FindFirstChild(
-                                    "HumanoidRootPart") then
-                                player.Character.HumanoidRootPart.CFrame =
-                                    missionGiver.HumanoidRootPart.CFrame *
-                                        CFrame.new(0, 0, 0)
-                                if (player.Character.HumanoidRootPart.Position -
-                                    missionGiver.HumanoidRootPart.Position).Magnitude <
-                                    10 then
-                                    clienttalk:FireServer()
-                                    wait(.1)
-                                    clienttalk:FireServer("accept")
-                                end
-                            end
-                        until mission.Visible or
-                            not missionGiver:FindFirstChild("Head") or
-                            not missionGiver.Head:FindFirstChild("givemission") or
-                            missionGiver.Head.givemission.Enabled == false or
-                            (player.currentmission and
-                                player.currentmission.Value ~= nil) or
-                            not settings.autofarmGreen or
-                            _G.isBossQuestAvailable()
-                    end
-                else
-                    if not settings.farmingLock then
-                        for _, npcEntity in pairs(workspace.npc:GetChildren()) do
-                            pcall(function()
-                                if npcEntity.ClassName == "Model" and
-                                    npcEntity:FindFirstChild("npctype") and
-                                    string.find(npcEntity.Name, "npc") and
-                                    npcEntity:FindFirstChild("HumanoidRootPart") and
-                                    npcEntity:FindFirstChild("Humanoid") and
-                                    npcEntity:FindFirstChild("Head") and
-                                    npcEntity.Head.CFrame.Y > -1000 and
-                                    not npcEntity:FindFirstChild("fullsusanoo") and
-                                    settings.autofarmGreen then
-                                    _G.attackNPC(npcEntity, "green")
-                                end
-                            end)
+                        local clienttalk =
+                            missionGiver:FindFirstChild("CLIENTTALK")
+                        if clienttalk then
+                            player.Character.HumanoidRootPart.CFrame =
+                                missionGiver.HumanoidRootPart.CFrame
+                            wait(0.3)
+                            clienttalk:FireServer()
+                            wait(0.2)
+                            clienttalk:FireServer("accept")
+                            return true
                         end
                     end
+                    return false
+                end)
+                if success and result then break end
+            end
+        else
+            if not settings.farmingLock then
+                for _, npcEntity in pairs(workspace.npc:GetChildren()) do
+                    pcall(function()
+                        if npcEntity.ClassName == "Model" and
+                            npcEntity:FindFirstChild("npctype") and
+                            string.find(npcEntity.Name, "npc") and
+                            npcEntity:FindFirstChild("HumanoidRootPart") and
+                            npcEntity:FindFirstChild("Humanoid") and
+                            npcEntity:FindFirstChild("Head") and
+                            npcEntity.Head.CFrame.Y > -1000 and
+                            not npcEntity:FindFirstChild("fullsusanoo") and
+                            settings.autofarmGreen then
+                            getgenv().attackNPC(npcEntity, "green")
+                        end
+                    end)
                 end
-            end)
+            end
         end
     end
 
     local function processBossQuests()
-        if not settings.autoFarmSelectedBosses or #settings.selectedBosses == 0 then
-            return
-        end
-        if settings.currentFarmingMode == "green" then return end
-        if not player or not player.Character or
+        if not settings.autoFarmSelectedBosses or #settings.selectedBosses == 0 or
+            settings.currentFarmingMode == "green" then return end
+        if not player.Character or
             not player.Character:FindFirstChild("HumanoidRootPart") then
             return
         end
 
-        for _, missionFolder in pairs(
-                                    workspace.bossdropmission.missions:GetChildren()) do
-            pcall(function()
-                if player.currentmission and player.currentmission.Value == nil then
-                    if table.find(settings.selectedBosses, missionFolder.Name) then
-                        for _, missionObject in pairs(
-                                                    missionFolder:GetChildren()) do
-                            if missionObject.Name == "missiongiver" and
-                                missionObject.Talk and
-                                missionObject.Talk.cooldown and
-                                missionObject.Talk.cooldown.Value < 1 and
-                                missionObject.Talk.accepted and
-                                missionObject.Talk.accepted.Value == false then
-                                local remote = missionObject.CLIENTTALK
-                                if remote then
-                                    repeat
-                                        wait(0.1)
-                                        if player.currentmission and
-                                            player.currentmission.Value ~= nil then
-                                            break
-                                        end
+        if not player.currentmission or player.currentmission.Value == nil then
+            for _, missionFolder in pairs(
+                                        workspace.bossdropmission.missions:GetChildren()) do
+                if table.find(settings.selectedBosses, missionFolder.Name) then
+                    local missionObject =
+                        missionFolder:FindFirstChild("missiongiver")
+                    if missionObject and missionObject.Talk and
+                        missionObject.Talk.cooldown and
+                        missionObject.Talk.cooldown.Value < 1 and
+                        missionObject.Talk.accepted and
+                        missionObject.Talk.accepted.Value == false then
 
-                                        if player.Character and
-                                            player.Character:FindFirstChild(
-                                                "HumanoidRootPart") then
-                                            player.Character.HumanoidRootPart
-                                                .CFrame =
-                                                missionObject.HumanoidRootPart
-                                                    .CFrame *
-                                                    CFrame.new(0, 0, 0)
-                                            wait(0.1)
-                                            remote:FireServer(player)
-                                        end
-                                    until missionObject.Visible or
-                                        (missionObject.Talk and
-                                            missionObject.Talk.accepted and
-                                            missionObject.Talk.accepted.Value ==
-                                            true) or
-                                        (player.currentmission and
-                                            player.currentmission.Value ~= nil) or
-                                        not settings.autoFarmSelectedBosses
-                                end
-                            end
-                        end
-                    end
-                else
-                    if not settings.farmingLock then
-                        for _, npcEntity in pairs(workspace.npc:GetChildren()) do
-                            pcall(function()
-                                if npcEntity.ClassName == "Model" and
-                                    npcEntity:FindFirstChild("npctype") and
-                                    string.find(npcEntity.Name, "npc") and
-                                    npcEntity:FindFirstChild("HumanoidRootPart") and
-                                    npcEntity:FindFirstChild("Humanoid") and
-                                    npcEntity:FindFirstChild("Head") and
-                                    npcEntity.Head.CFrame.Y > -1000 and
-                                    not npcEntity:FindFirstChild("fullsusanoo") and
-                                    settings.autoFarmSelectedBosses then
-                                    _G.attackNPC(npcEntity, "bosses")
-                                end
-                            end)
+                        local remote = missionObject.CLIENTTALK
+                        if remote then
+                            player.Character.HumanoidRootPart.CFrame =
+                                missionObject.HumanoidRootPart.CFrame
+                            wait(0.3)
+                            remote:FireServer(player)
+                            break
                         end
                     end
                 end
-            end)
+            end
+        else
+            if not settings.farmingLock then
+                for _, npcEntity in pairs(workspace.npc:GetChildren()) do
+                    pcall(function()
+                        if npcEntity.ClassName == "Model" and
+                            npcEntity:FindFirstChild("npctype") and
+                            string.find(npcEntity.Name, "npc") and
+                            npcEntity:FindFirstChild("HumanoidRootPart") and
+                            npcEntity:FindFirstChild("Humanoid") and
+                            npcEntity:FindFirstChild("Head") and
+                            npcEntity.Head.CFrame.Y > -1000 and
+                            not npcEntity:FindFirstChild("fullsusanoo") and
+                            settings.autoFarmSelectedBosses then
+                            getgenv().attackNPC(npcEntity, "bosses")
+                        end
+                    end)
+                end
+            end
         end
     end
 
@@ -351,36 +300,40 @@ do
             player.statz.lvl:FindFirstChild("lvl") and
             player.statz.lvl.lvl.Value == 1000) then return end
 
-        repeat
-            wait()
-            player.startevent:FireServer("rankup")
-        until (player.statz and player.statz.lvl and
-            player.statz.lvl:FindFirstChild("lvl") and
-            player.statz.lvl.lvl.Value == 1) or not settings.autoRankUp
+        spawn(function()
+            while settings.autoRankUp and player.statz and player.statz.lvl and
+                player.statz.lvl:FindFirstChild("lvl") and
+                player.statz.lvl.lvl.Value == 1000 do
+                player.startevent:FireServer("rankup")
+                wait(1)
+            end
+        end)
     end
 
     local function processStatsAdd()
         if not settings.addStats or not settings.selectedStats or
             #settings.selectedStats == 0 then return end
 
-        for _, selectedStat in pairs(settings.selectedStats) do
-            local startevent = player.startevent
-            if startevent then
-                startevent:FireServer("addstat", selectedStat,
-                                      settings.amountStats)
+        spawn(function()
+            for _, selectedStat in pairs(settings.selectedStats) do
+                if player.startevent then
+                    player.startevent:FireServer("addstat", selectedStat,
+                                                 settings.amountStats)
+                    wait(0.1)
+                end
             end
-        end
+        end)
     end
 
-    RunService.RenderStepped:Connect(function()
+    RunService.Heartbeat:Connect(function()
         local currentTime = tick()
         if currentTime - lastUpdate < updateInterval then return end
         lastUpdate = currentTime
 
-        processGreenQuests()
-        processBossQuests()
         processAutoRank()
         processStatsAdd()
+        processGreenQuests()
+        processBossQuests()
     end)
 end
 
@@ -431,7 +384,7 @@ do
         settings.selectedBosses = values
     end)
 
-    local initialBosses = _G.getAllVillageBosses()
+    local initialBosses = getgenv().getAllVillageBosses()
     bossesDropdown:SetValues(initialBosses)
 
     Tabs.Main:CreateToggle("AutoFarmSelectedBossesToggle", {
